@@ -26,6 +26,8 @@ const explicitOrigins = process.env.FRONTEND_ORIGIN
 const defaultOrigins = [
   "http://localhost:3000",
   "https://realestate-frontend-h4u3.onrender.com",
+  "https://www.astapropertymanagement.co.uk",
+  "https://astapropertymanagement.co.uk",
 ];
 const allowedOrigins = explicitOrigins.length ? explicitOrigins : defaultOrigins;
 const isLocalhost = (origin) => /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
