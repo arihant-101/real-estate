@@ -1,0 +1,37 @@
+/**
+ * Leaf ids that require at least one photo (keep in sync with
+ * frontend/data/repairsTaxonomy.ts → REPAIR_LEAVES_REQUIRING_PHOTOS).
+ */
+export const REPAIR_LEAF_IDS_REQUIRING_PHOTOS = new Set([
+  "tap-leak",
+  "drain",
+  "seal",
+  "ceiling-leak",
+  "pipe",
+  "damp",
+  "kitchen-odour",
+  "glass",
+  "condensation",
+  "tiles",
+  "walls",
+  "ceilings",
+  "roofline",
+  "drains",
+  "fence",
+  "sockets",
+  "fuse",
+  "condensation-air",
+  "rodents",
+  "insects",
+  "birds",
+  "camera",
+  "alarm-kit",
+  "gas-smell",
+  "flood",
+  "electrical-burn",
+  "glass-hazard",
+  "lift-broken",
+  "lift-door",
+  "not-listed",
+  "multiple",
+]);

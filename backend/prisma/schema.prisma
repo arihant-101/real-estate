@@ -1,0 +1,241 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   String               @id @default(uuid())
+  email                String               @unique
+  hashedPassword       String
+  name                 String?
+  role                 String               @default("TENANT")
+  createdAt            DateTime             @default(now())
+  favorites            Favorite[]
+  propertiesAsLandlord Property[]
+  tenancies            Tenancy[]
+  maintenanceRequests  MaintenanceRequest[]
+  tenancyApplications  TenancyApplication[]
+  propertyViews        PropertyView[]
+}
+
+model Area {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  imageUrl    String?
+  description String?    @db.Text
+  properties  Property[]
+}
+
+enum PropertyStatus {
+  DRAFT
+  LIVE
+  ARCHIVED
+}
+
+model Property {
+  id                  String               @id @default(uuid())
+  title               String
+  slug                String               @unique
+  description         String?              @db.Text
+  address             String
+  city                String
+  postCode            String?
+  areaId              String?
+  landlordId          String?
+  area                Area?                @relation(fields: [areaId], references: [id])
+  landlord            User?                @relation(fields: [landlordId], references: [id], onDelete: SetNull)
+  listingType         ListingType          @default(RENTAL)
+  beds                Int
+  baths               Int
+  areaSqFt            Int
+  pricePerMonth       Decimal              @db.Decimal(12, 2)
+  isFeatured          Boolean              @default(false)
+  status              PropertyStatus       @default(DRAFT)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  images              PropertyImage[]
+  enquiries           Enquiry[]
+  favorites           Favorite[]
+  maintenanceRequests MaintenanceRequest[]
+  tenancyApplications TenancyApplication[]
+  tenancies           Tenancy[]
+  propertyViews       PropertyView[]
+  availability        PropertyAvailability[]
+}
+
+enum ListingType {
+  RENTAL
+  HOLIDAY_LET
+}
+
+model PropertyImage {
+  id         String   @id @default(uuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  url        String
+  order      Int      @default(0)
+}
+
+model Enquiry {
+  id         String    @id @default(uuid())
+  name       String
+  email      String
+  phone      String?
+  subject    String?
+  message    String    @db.Text
+  consent    Boolean
+  source     String    @default("CONTACT_PAGE")
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime  @default(now())
+}
+
+model Favorite {
+  id         String   @id @default(uuid())
+  userId     String
+  propertyId String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, propertyId])
+}
+
+model MaintenanceRequest {
+  id                   String    @id @default(uuid())
+  tenantName           String    @map("tenant_name")
+  tenantEmail          String    @default("")
+  propertyAddressOrRef String    @map("property_address")
+  issueCategory        String    @map("issue_type")
+  description          String    @db.Text
+  urgency              String    @default("MEDIUM")
+  status               String    @default("pending")
+  /// GENERAL = visible to landlords; REPAIRS_WIZARD = tenant /repairs flow, admin-only for landlords
+  channel              String    @default("GENERAL")
+  /// JSON array of base64 data URLs from tenant repairs wizard (optional)
+  photoAttachments     String?   @db.Text
+  propertyId           String?
+  tenantId             String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  property             Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  tenant               User?     @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+}
+
+model BlogPost {
+  id          String    @id @default(uuid())
+  title       String
+  slug        String    @unique
+  excerpt     String?   @db.Text
+  body        String?   @db.Text
+  author      String?
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model Testimonial {
+  id                   String   @id @default(uuid())
+  authorName           String
+  role                 String
+  content              String   @db.Text
+  rating               Int?
+  emailForVerification String?
+  includeNameLocation  Boolean  @default(true)
+  photoData            String?  @db.Text
+  consent              Boolean  @default(false)
+  isApproved           Boolean  @default(false)
+  createdAt            DateTime @default(now())
+}
+
+enum TenancyApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model TenancyApplication {
+  id          String                   @id @default(uuid())
+  propertyId  String
+  applicantId String?
+  name        String
+  email       String
+  phone       String?
+  employment  String?                  @db.Text
+  references  String?                  @db.Text
+  status      TenancyApplicationStatus @default(PENDING)
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  property    Property                 @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  applicant   User?                    @relation(fields: [applicantId], references: [id], onDelete: SetNull)
+}
+
+enum TenancyStatus {
+  ACTIVE
+  NOTICE_GIVEN
+  ENDED
+}
+
+model Tenancy {
+  id                String            @id @default(uuid())
+  propertyId        String
+  tenantId          String
+  startDate         DateTime
+  endDate           DateTime?
+  rentAmount        Decimal           @db.Decimal(12, 2)
+  depositAmount     Decimal?          @db.Decimal(12, 2)
+  status            TenancyStatus     @default(ACTIVE)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  property          Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  tenant            User              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  rentLedgerEntries RentLedgerEntry[]
+}
+
+enum RentLedgerType {
+  RENT
+  DEPOSIT
+  FEE
+  ADJUSTMENT
+}
+
+enum RentLedgerStatus {
+  DUE
+  PAID
+  OVERDUE
+}
+
+model RentLedgerEntry {
+  id        String           @id @default(uuid())
+  tenancyId String
+  dueDate   DateTime
+  amount    Decimal          @db.Decimal(12, 2)
+  currency  String           @default("GBP")
+  type      RentLedgerType
+  status    RentLedgerStatus @default(DUE)
+  paidAt    DateTime?
+  reference String?
+  createdAt DateTime         @default(now())
+  tenancy   Tenancy          @relation(fields: [tenancyId], references: [id], onDelete: Cascade)
+}
+
+model PropertyView {
+  id         String   @id @default(uuid())
+  propertyId String
+  userId     String?
+  viewedAt   DateTime @default(now())
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model PropertyAvailability {
+  id         String   @id @default(uuid())
+  propertyId String
+  startDate  DateTime
+  endDate    DateTime
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
