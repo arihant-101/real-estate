@@ -15,10 +15,23 @@ export async function generateMetadata({
   params: { id: string };
 }): Promise<Metadata> {
   const p = await getProperty(params.id);
-  if (!p) return { title: "Property | ASTA Property Management" };
+  if (!p) return { title: "Property" };
+
+  const title = p.title?.trim() || "Property";
+  const location = [p.address, p.city, p.postCode].filter(Boolean).join(", ");
+  const description =
+    p.description?.trim() ||
+    (location ? `View details for ${title} in ${location}.` : `View details for ${title}.`);
+
   return {
-    title: `${p.title} | ASTA Property Management`,
-    description: p.description ?? undefined,
+    // Keep the page title raw: RootLayout metadata template appends brand once.
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+    },
   };
 }
 
