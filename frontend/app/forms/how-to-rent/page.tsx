@@ -2,21 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download, BookOpen, CheckCircle, AlertCircle, FileText, ClipboardList, HelpCircle } from "lucide-react";
-import { formatFilenameWithLondonDate } from "@/lib/date-utils";
+import { ArrowLeft, Download, BookOpen, CheckCircle, AlertCircle, FileText, ClipboardList, HelpCircle, Loader2 } from "lucide-react";
+import { downloadHowToRentBrandedPdf } from "@/lib/how-to-rent-pdf";
 
 export default function HowToRentPage() {
   const [selectedSection, setSelectedSection] = useState("overview");
-  
-  const handleDownload = () => {
-    const filename = formatFilenameWithLondonDate('how-to-rent-october-2023', 'pdf');
-    const link = document.createElement('a');
-    link.href = '/asta-forms/how-to-rent-october-2023.pdf';
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  const [downloading, setDownloading] = useState(false);
   const [checklist, setChecklist] = useState({
     beforeStart: false,
     lookingForHome: false,
@@ -25,6 +16,15 @@ export default function HowToRentPage() {
     endOfPeriod: false,
     thingsGoWrong: false,
   });
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadHowToRentBrandedPdf(checklist);
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   const sections = [
     { id: "overview", title: "Overview", icon: FileText },
@@ -580,14 +580,19 @@ export default function HowToRentPage() {
               <p className="text-elegant-muted">
                 The checklist for renting in England (October 2023)
               </p>
+              <p className="text-elegant-muted mt-2 max-w-xl text-sm">
+                Download: official PDF with ASTA logo on every page, plus a final page with your sidebar checklist ticks.
+              </p>
             </div>
-            
+
             <button
+              type="button"
               onClick={handleDownload}
-              className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-primary hover:bg-primary/20 transition"
+              disabled={downloading}
+              className="flex shrink-0 items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-primary transition hover:bg-primary/20 disabled:opacity-60"
             >
-              <Download className="h-4 w-4" />
-              <span className="text-sm font-medium">Download</span>
+              {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+              <span className="text-sm font-medium">{downloading ? "Preparing…" : "Download PDF"}</span>
             </button>
           </div>
 

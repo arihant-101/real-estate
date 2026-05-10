@@ -3,12 +3,6 @@ import Image from "next/image";
 
 const ACCREDITATION_LOGOS = [
   {
-    src: "/accreditations/safeagent.png",
-    alt: "safeagent accredited",
-    width: 132,
-    height: 72,
-  },
-  {
     src: "/accreditations/tds.png",
     alt: "Tenancy Deposit Scheme member",
     width: 108,
@@ -21,16 +15,17 @@ const ACCREDITATION_LOGOS = [
     height: 72,
   },
   {
-    src: "/accreditations/green-small-business.png",
-    alt: "Green Small Business Certified",
-    width: 108,
+    src: "/accreditations/nrla-mask.png",
+    alt: "NRLA — National Residential Landlords Association",
+    width: 140,
     height: 72,
   },
 ] as const;
 
 const MARQUEE_LOGOS = [...ACCREDITATION_LOGOS, ...ACCREDITATION_LOGOS, ...ACCREDITATION_LOGOS] as const;
 
-const BRAND_GOLD = "#CBA38C";
+/** Muted taupe for accreditation marks (less bright than primary `text-primary` gold on dark). */
+const ACCREDITATION_MARK_COLOR = "#8E7262";
 const QUICK_LINKS = [
   { href: "/owners", label: "For Owners" },
   { href: "/tenants", label: "For Tenants" },
@@ -69,17 +64,17 @@ function AccreditationMarquee() {
               {MARQUEE_LOGOS.map((logo, index) => (
                 <div
                   key={`${set}-${logo.src}-${index}`}
-                  className="flex shrink-0 items-center bg-transparent"
+                  className="flex h-[72px] shrink-0 items-center bg-transparent"
                 >
                   <span
                     role="img"
                     aria-label={logo.alt}
-                    className="block"
+                    className="block opacity-[0.82]"
                     style={
                       {
                         width: `${logo.width}px`,
                         height: `${logo.height}px`,
-                        backgroundColor: BRAND_GOLD,
+                        backgroundColor: ACCREDITATION_MARK_COLOR,
                         WebkitMaskImage: `url(${logo.src})`,
                         maskImage: `url(${logo.src})`,
                         WebkitMaskRepeat: "no-repeat",

@@ -110,7 +110,7 @@ export default function OwnersPage() {
               </p>
               <p>
                 You’ll benefit from the insight of our team, including Director Theresia Petersen,
-                senior property managers Misha and Mariia, and compliance specialist Anton Berg, all
+                Property Manager Misha, Senior Property Manager Mariia, and compliance specialist Anton Berg, all
                 of whom are committed to your success.
               </p>
             </div>

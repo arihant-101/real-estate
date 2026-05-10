@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download, Save, Users, AlertCircle, Info, Calendar, PoundSterling, Plus, Minus } from "lucide-react";
-import { formatFilenameWithLondonDate } from "@/lib/date-utils";
+import { ArrowLeft, Download, Save, Users, AlertCircle, Info, Calendar, PoundSterling, Plus, Minus, Loader2 } from "lucide-react";
+import { downloadJointASTFormPdf } from "@/lib/joint-ast-pdf";
 
 export default function JointASTAgreementPage() {
   const [formData, setFormData] = useState({
@@ -62,6 +62,7 @@ export default function JointASTAgreementPage() {
 
   const [currentSection, setCurrentSection] = useState("landlord");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [downloading, setDownloading] = useState(false);
 
   const sections = [
     { id: "landlord", title: "Landlord Details", icon: Users },
@@ -112,14 +113,13 @@ export default function JointASTAgreementPage() {
     }));
   };
 
-  const handleDownload = () => {
-    const filename = formatFilenameWithLondonDate('NRLA-joint-ast-family-couple-individual-2022', 'pdf');
-    const link = document.createElement('a');
-    link.href = '/asta-forms/NRLA-joint-ast-family-couple-individual-2022.pdf';
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadJointASTFormPdf(formData);
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const renderSection = () => {
@@ -694,6 +694,9 @@ export default function JointASTAgreementPage() {
               <p className="text-elegant-muted">
                 Joint Assured Shorthold Tenancy Agreement for families, couples, and individuals
               </p>
+              <p className="text-elegant-muted mt-2 max-w-2xl text-sm">
+                Download PDF exports the fields you fill in here, with the ASTA logo top-left on every page.
+              </p>
             </div>
 
             <div className="flex w-full shrink-0 flex-col gap-3 md:w-auto md:flex-row md:items-center md:justify-end">
@@ -707,10 +710,13 @@ export default function JointASTAgreementPage() {
               <button
                 type="button"
                 onClick={handleDownload}
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2.5 text-primary hover:bg-primary/20 md:w-auto md:justify-start md:py-2"
+                disabled={downloading}
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2.5 text-primary hover:bg-primary/20 disabled:opacity-60 md:w-auto md:justify-start md:py-2"
               >
-                <Download className="h-4 w-4 shrink-0" />
-                <span className="text-sm font-medium whitespace-nowrap">Download</span>
+                {downloading ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Download className="h-4 w-4 shrink-0" />}
+                <span className="text-sm font-medium whitespace-nowrap">
+                  {downloading ? "Preparing PDF…" : "Download PDF"}
+                </span>
               </button>
             </div>
           </div>

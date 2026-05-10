@@ -1,18 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Users, AlertCircle, CheckCircle, Info, Download, FileText } from "lucide-react";
-import { formatFilenameWithLondonDate } from "@/lib/date-utils";
+import { ArrowLeft, Users, AlertCircle, CheckCircle, Info, Download, FileText, Loader2 } from "lucide-react";
+import { downloadStaticPdfWithTopLeftLogo } from "@/lib/branded-static-pdf-download";
 
 export default function JointASTInstructionsPage() {
-  const handleDownload = () => {
-    const filename = formatFilenameWithLondonDate('NRLA-joint-AST-completion-instructions-2025', 'pdf');
-    const link = document.createElement('a');
-    link.href = '/asta-forms/NRLA-joint-AST-completion-instructions-2025.pdf';
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadStaticPdfWithTopLeftLogo(
+        "/asta-forms/NRLA-joint-AST-completion-instructions-2025.pdf",
+        "NRLA-joint-AST-completion-instructions-2025"
+      );
+    } finally {
+      setDownloading(false);
+    }
   };
   const instructionSections = [
     {
@@ -323,11 +328,13 @@ export default function JointASTInstructionsPage() {
                 Complete Form
               </Link>
               <button
+                type="button"
                 onClick={handleDownload}
-                className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-primary hover:bg-primary/20 transition"
+                disabled={downloading}
+                className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-primary transition hover:bg-primary/20 disabled:opacity-60"
               >
-                <Download className="h-4 w-4" />
-                <span className="text-sm font-medium">Download</span>
+                {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                <span className="text-sm font-medium">{downloading ? "Preparing…" : "Download PDF"}</span>
               </button>
             </div>
           </div>

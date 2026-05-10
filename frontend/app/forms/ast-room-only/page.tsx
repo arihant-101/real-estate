@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download, Save, FileText, AlertCircle, Info, Calendar, PoundSterling } from "lucide-react";
-import { formatFilenameWithLondonDate } from "@/lib/date-utils";
+import { ArrowLeft, Download, Save, FileText, AlertCircle, Info, Calendar, PoundSterling, Loader2 } from "lucide-react";
+import { downloadASTRoomOnlyFormPdf } from "@/lib/ast-room-only-pdf";
 
 export default function ASTRoomOnlyPage() {
   const [formData, setFormData] = useState({
@@ -61,6 +61,7 @@ export default function ASTRoomOnlyPage() {
 
   const [currentSection, setCurrentSection] = useState("landlord");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [downloading, setDownloading] = useState(false);
 
   const sections = [
     { id: "landlord", title: "Landlord Details", icon: FileText },
@@ -140,14 +141,13 @@ export default function ASTRoomOnlyPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleDownload = () => {
-    const filename = formatFilenameWithLondonDate('NRLA-AST-room-only-2024', 'pdf');
-    const link = document.createElement('a');
-    link.href = '/asta-forms/NRLA-AST-room-only-2024.pdf';
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadASTRoomOnlyFormPdf(formData);
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const renderSection = () => {
@@ -734,6 +734,9 @@ export default function ASTRoomOnlyPage() {
               <p className="text-elegant-muted">
                 Assured Shorthold Tenancy Agreement for room-only lettings
               </p>
+              <p className="text-elegant-muted mt-2 max-w-2xl text-sm">
+                Download PDF exports the fields below (your entries), with the ASTA logo top-left on every page — not the blank NRLA template file.
+              </p>
             </div>
 
             <div className="flex w-full shrink-0 flex-col gap-3 md:w-auto md:flex-row md:items-center md:justify-end">
@@ -747,10 +750,13 @@ export default function ASTRoomOnlyPage() {
               <button
                 type="button"
                 onClick={handleDownload}
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2.5 text-primary hover:bg-primary/20 md:w-auto md:justify-start md:py-2"
+                disabled={downloading}
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2.5 text-primary hover:bg-primary/20 disabled:opacity-60 md:w-auto md:justify-start md:py-2"
               >
-                <Download className="h-4 w-4 shrink-0" />
-                <span className="text-sm font-medium whitespace-nowrap">Download</span>
+                {downloading ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Download className="h-4 w-4 shrink-0" />}
+                <span className="text-sm font-medium whitespace-nowrap">
+                  {downloading ? "Preparing PDF…" : "Download PDF"}
+                </span>
               </button>
             </div>
           </div>

@@ -26,6 +26,7 @@ const navLinks = [
       { href: "/forms", label: "All Forms" },
       { href: "/forms/how-to-rent", label: "How to Rent Guide" },
       { href: "/forms/nrla-checklist", label: "NRLA Checklist" },
+      { href: "/forms/residential-tenancy-application", label: "Tenancy Application" },
       { href: "/forms/ast-room-only", label: "AST Room Only" },
       { href: "/forms/joint-ast-agreement", label: "Joint AST Agreement" },
     ],

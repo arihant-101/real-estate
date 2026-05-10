@@ -2,89 +2,156 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { FileText, Download, Users, Home, CheckSquare, BookOpen } from "lucide-react";
-import { formatFilenameWithLondonDate } from "@/lib/date-utils";
+import { FileText, Download, Users, Home, CheckSquare, BookOpen, ClipboardList, Loader2, UserCheck } from "lucide-react";
 import ContactSupportPanel from "@/components/ContactSupportPanel";
+import { downloadStaticPdfWithTopLeftLogo } from "@/lib/branded-static-pdf-download";
+import { downloadHowToRentBrandedPdf } from "@/lib/how-to-rent-pdf";
+import { emptyTenantReferencingGoogleStyleForm } from "@/data/tenant-referencing-application-form";
+import { downloadTenantReferencingApplicationPdf } from "@/lib/tenant-referencing-application-pdf";
+
+type FormCardDownload =
+  | { downloadable: false }
+  | {
+      downloadable: true;
+      downloadKind: "branded-static";
+      downloadUrl: string;
+      downloadBaseName: string;
+    }
+  | {
+      downloadable: true;
+      downloadKind: "how-to-rent-packed";
+    }
+  | {
+      downloadable: true;
+      downloadKind: "tenant-referencing";
+    };
+
+type FormCard = {
+  id: string;
+  title: string;
+  description: string;
+  icon: typeof BookOpen;
+  category: string;
+  href: string;
+} & FormCardDownload;
+
+const EMPTY_HOW_TO_RENT_CHECKLIST = {
+  beforeStart: false,
+  lookingForHome: false,
+  foundPlace: false,
+  livingInHome: false,
+  endOfPeriod: false,
+  thingsGoWrong: false,
+};
 
 export default function FormsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const handleDownload = (downloadUrl: string, originalFilename: string) => {
-    // Extract the base filename without extension
-    const baseName = originalFilename.replace(/\.[^/.]+$/, "");
-    const extension = originalFilename.split('.').pop() || 'pdf';
-    
-    // Create filename with London date
-    const filename = formatFilenameWithLondonDate(baseName, extension);
-    
-    // Create a temporary link element for download
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const handleCardDownload = async (form: FormCard) => {
+    if (!form.downloadable) return;
+    setDownloadingId(form.id);
+    try {
+      if (form.downloadKind === "branded-static") {
+        await downloadStaticPdfWithTopLeftLogo(form.downloadUrl, form.downloadBaseName);
+      } else if (form.downloadKind === "how-to-rent-packed") {
+        await downloadHowToRentBrandedPdf(EMPTY_HOW_TO_RENT_CHECKLIST);
+      } else if (form.downloadKind === "tenant-referencing") {
+        await downloadTenantReferencingApplicationPdf(emptyTenantReferencingGoogleStyleForm());
+      }
+    } finally {
+      setDownloadingId(null);
+    }
   };
 
-  const forms = [
+  const forms: FormCard[] = [
     {
       id: "how-to-rent",
       title: "How to Rent Guide",
-      description: "The official checklist for renting in England (October 2023). Essential guidance for tenants on rights, responsibilities, and the rental process.",
+      description:
+        "Official How to Rent PDF (England) with ASTA logo on every page. From the form page you can also append your sidebar checklist ticks.",
       icon: BookOpen,
       category: "Guidance",
       href: "/forms/how-to-rent",
       downloadable: true,
-      downloadUrl: "/asta-forms/how-to-rent-october-2023.pdf",
+      downloadKind: "how-to-rent-packed",
     },
     {
       id: "nrla-checklist",
       title: "NRLA Checklist",
-      description: "Comprehensive checklist for landlords and tenants to ensure all requirements are met during the tenancy process.",
+      description:
+        "Interactive checklist with PDF download (ASTA logo and your progress). Open the form and use Download PDF.",
       icon: CheckSquare,
       category: "Checklist",
       href: "/forms/nrla-checklist",
+      downloadable: false,
+    },
+    {
+      id: "tenant-referencing",
+      title: "Tenant Referencing Guide",
+      description:
+        "Same fields as our Google Residential Tenancy Application. Complete on site, download a branded PDF, or submit on Google when ready.",
+      icon: UserCheck,
+      category: "Guidance",
+      href: "/forms/tenant-referencing",
       downloadable: true,
-      downloadUrl: "/asta-forms/NRLA%20Checklist.docx",
+      downloadKind: "tenant-referencing",
+    },
+    {
+      id: "residential-tenancy-application",
+      title: "Residential Tenancy Application",
+      description:
+        "NRLA-aligned application form with holding deposit acknowledgment (one week's rent). Download merges your answers with the England Holding Deposit Agreement and ASTA branding.",
+      icon: ClipboardList,
+      category: "Tenancy Agreement",
+      href: "/forms/residential-tenancy-application",
+      downloadable: false,
     },
     {
       id: "ast-room-only",
       title: "AST Room Only Agreement 2024",
-      description: "Assured Shorthold Tenancy Agreement for room-only lettings. Ideal for HMO properties and shared accommodations.",
+      description:
+        "Fill in the wizard on the form page, then Download PDF for a copy of your entries with ASTA branding (not the blank NRLA template).",
       icon: Home,
       category: "Tenancy Agreement",
       href: "/forms/ast-room-only",
-      downloadable: true,
-      downloadUrl: "/asta-forms/NRLA-AST-room-only-2024.pdf",
+      downloadable: false,
     },
     {
       id: "ast-room-instructions",
       title: "AST Room Only Completion Instructions",
-      description: "Step-by-step instructions for completing the NRLA AST Room Only agreement (2025 edition).",
+      description:
+        "NRLA completion instructions PDF with ASTA logo on every page (same document as the official instructions file).",
       icon: FileText,
       category: "Instructions",
       href: "/forms/ast-room-instructions",
       downloadable: true,
+      downloadKind: "branded-static",
       downloadUrl: "/asta-forms/NRLA-AST-room-only-completion-instructions-2025.pdf",
+      downloadBaseName: "NRLA-AST-room-only-completion-instructions-2025",
     },
     {
       id: "joint-ast-instructions",
       title: "Joint AST Completion Instructions",
-      description: "Comprehensive guide for completing joint tenancy agreements for multiple tenants (2025 edition).",
+      description:
+        "NRLA joint AST completion instructions PDF with ASTA logo on every page (same document as the official instructions file).",
       icon: FileText,
       category: "Instructions",
       href: "/forms/joint-ast-instructions",
       downloadable: true,
+      downloadKind: "branded-static",
       downloadUrl: "/asta-forms/NRLA-joint-AST-completion-instructions-2025.pdf",
+      downloadBaseName: "NRLA-joint-AST-completion-instructions-2025",
     },
     {
       id: "joint-ast-agreement",
       title: "Joint AST Agreement",
-      description: "Joint Assured Shorthold Tenancy Agreement for families, couples, and individuals sharing entire properties.",
+      description:
+        "Complete the joint wizard on the form page, then Download PDF for your filled summary with ASTA branding.",
       icon: Users,
       category: "Tenancy Agreement",
       href: "/forms/joint-ast-agreement",
-      downloadable: true,
-      downloadUrl: "/asta-forms/NRLA-joint-ast-family-couple-individual-2022.pdf",
+      downloadable: false,
     },
   ];
 
@@ -160,15 +227,21 @@ export default function FormsPage() {
                   >
                     View Form
                   </Link>
-                  {form.downloadable && form.downloadUrl && (
+                  {form.downloadable ? (
                     <button
-                      onClick={() => handleDownload(form.downloadUrl, form.downloadUrl.split("/").pop() || 'document.pdf')}
-                      className="rounded-lg border border-white/20 p-2 text-white transition hover:border-primary/50 hover:text-primary"
-                      title="Download"
+                      type="button"
+                      onClick={() => handleCardDownload(form)}
+                      disabled={downloadingId === form.id}
+                      className="rounded-lg border border-white/20 p-2 text-white transition hover:border-primary/50 hover:text-primary disabled:opacity-50"
+                      title="Download PDF with logo"
                     >
-                      <Download className="h-4 w-4" />
+                      {downloadingId === form.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Download className="h-4 w-4" />
+                      )}
                     </button>
-                  )}
+                  ) : null}
                 </div>
 
                 {/* Hover Effect */}

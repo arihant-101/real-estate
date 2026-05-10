@@ -18,7 +18,7 @@ const TEAM = [
   },
   {
     name: "Misha",
-    role: "Senior Property Manager",
+    role: "Property Manager",
     bio: "Oversees day-to-day tenancy management, inspections, and maintenance coordination across London boroughs.",
   },
   {
@@ -27,9 +27,14 @@ const TEAM = [
     bio: "Specialises in complex portfolios, compliance-led processes, and high-standard tenant experiences.",
   },
   {
+    name: "Helen",
+    role: "IT and Office Coordinator",
+    bio: "Helen is responsible for ensuring the smooth day-to-day operations of the office.",
+  },
+  {
     name: "Anton",
-    role: "Client & Compliance Specialist",
-    bio: "Supports landlords with legal documentation, regulatory updates, and clear, proactive client communication.",
+    role: "Resident Office Cat",
+    bio: "Responsible for nap scheduling and snack compliance. Occasionally available for meetings, if awake.",
   },
 ];
 
