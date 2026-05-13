@@ -2,6 +2,9 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.18.0"
+  },
   "scripts": {
     "dev": "bash scripts/dev.sh",
     "dev:3020": "next dev -p 3020",
@@ -11,7 +14,6 @@
     "favicons": "node scripts/generate-favicons.mjs"
   },
   "dependencies": {
-    "@next/swc-darwin-arm64": "14.2.18",
     "autoprefixer": "^10.4.27",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.0",
