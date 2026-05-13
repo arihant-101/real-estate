@@ -64,15 +64,6 @@ The Next.js app is deployed on Render at **[https://realestate-frontend-h4u3.onr
 
 `next build` reads `frontend/.env.production`, which sets `NEXT_PUBLIC_SITE_URL` to that origin so Open Graph, sitemap, and robots use the correct absolute URLs. Favicons are generated into `frontend/app/icon.png` and `frontend/app/apple-icon.png` from `public/asta-logo.png` + `public/asta-text.png` (`npm run favicons` in `frontend/`).
 
-### Vercel
-
-This repo is a monorepo (`frontend/` + `backend/`). Use one of these approaches:
-
-1. **Recommended:** In the Vercel project, set **Root Directory** to `frontend`, leave the default install/build (`npm install` / `npm run build`). Ignore the root `vercel.json` in that case (Vercel reads config from the root directory you set).
-2. **Alternative:** Leave the connected repo at the monorepo root. The root **`vercel.json`** only overrides install/build to run under `frontend/` (`npm install --prefix=frontend` then `npm run build --prefix=frontend`). If the deployment still fails, switch to option 1 — Vercel’s Next.js integration expects the app root to be the directory that contains `package.json` with `next` in it.
-
-Do not list **`@next/swc-darwin-arm64`** (or other OS-specific Next SWC packages) as direct `dependencies` in `frontend/package.json` — Linux builds (Vercel) can fail. Next.js pulls the correct SWC binaries via its own optional dependencies.
-
 ## Pages (17)
 
 | Route | Page |

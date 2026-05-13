@@ -1,5 +1,0 @@
-{
-  "name": "asta-property-monorepo",
-  "private": true,
-  "description": "Vercel uses vercel.json to install and build frontend/. Prefer setting Project Root Directory to frontend in the Vercel dashboard and omitting root overrides if you deploy only the Next app."
-}
