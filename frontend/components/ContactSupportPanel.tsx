@@ -18,10 +18,10 @@ export default function ContactSupportPanel({ className = "" }: ContactSupportPa
 
       <div className="mt-6 grid gap-3 sm:grid-cols-3">
         <a
-          href="mailto:hello@astaone.co.uk"
+          href="mailto:hello@astapropertymanagement.co.uk"
           className="rounded-xl border border-white/15 bg-black/20 px-4 py-3 text-sm text-white/90 transition hover:border-primary/40 hover:text-primary"
         >
-          hello@astaone.co.uk
+          hello@astapropertymanagement.co.uk
         </a>
         <a
           href="tel:07452766766"

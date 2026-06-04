@@ -77,14 +77,11 @@ export default function ContactUsPage() {
                 </dt>
                 <dd>
                   <a
-                    href="mailto:hello@astaone.co.uk"
+                    href="mailto:hello@astapropertymanagement.co.uk"
                     className="text-sm font-medium text-white hover:text-white/80"
                   >
-                    hello@astaone.co.uk
+                    hello@astapropertymanagement.co.uk
                   </a>
-                  <p className="text-xs text-elegant-muted">
-                    For legal or policy matters, email info@astapm.co.uk.
-                  </p>
                 </dd>
               </div>
             </dl>
