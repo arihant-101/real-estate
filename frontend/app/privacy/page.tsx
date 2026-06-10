@@ -214,8 +214,8 @@ export default function PrivacyPage() {
               <p>ASTA Property Management</p>
               <p>
                 Email:{" "}
-                <a href="mailto:info@astapm.co.uk" className="text-primary hover:underline">
-                  info@astapm.co.uk
+                <a href="mailto:hello@astapropertymanagement.co.uk" className="text-primary hover:underline">
+                  hello@astapropertymanagement.co.uk
                 </a>
               </p>
               <p>

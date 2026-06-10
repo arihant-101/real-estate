@@ -6,11 +6,11 @@ export default function HeroContactMini({ className = "" }: HeroContactMiniProps
   return (
     <aside className={`hidden md:block text-right ${className}`} aria-label="Contact details">
       <div className="inline-flex flex-col items-end gap-1 text-sm text-white/90 lg:text-base">
-        <a href="mailto:hello@astaone.co.uk" className="inline-flex items-center gap-1.5 hover:text-primary">
+        <a href="mailto:hello@astapropertymanagement.co.uk" className="inline-flex items-center gap-1.5 hover:text-primary">
           <svg className="h-4 w-4 text-primary/90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 6l9 6 9-6M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
-          <span>hello@astaone.co.uk</span>
+          <span>hello@astapropertymanagement.co.uk</span>
         </a>
 
         <a href="tel:07452766766" className="inline-flex items-center gap-1.5 hover:text-primary">

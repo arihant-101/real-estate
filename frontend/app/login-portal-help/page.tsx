@@ -38,7 +38,7 @@ const faqs = [
   {
     question: "What if I notice an error in my financial statements?",
     answer:
-      "Please contact our finance team immediately at hello@astaone.co.uk. We will investigate and correct any discrepancies promptly.",
+      "Please contact our finance team immediately at hello@astapropertymanagement.co.uk. We will investigate and correct any discrepancies promptly.",
   },
   {
     question: "Can I add multiple users (e.g., co-landlords or family members)?",
@@ -123,8 +123,8 @@ export default function LoginPortalHelpPage() {
                       If you forget your password, click the "Forgot Password" link on the login page.
                       You will be asked to enter your registered email address to receive a secure
                       reset link. For further assistance, contact ASTA support at{" "}
-                      <a href="mailto:hello@astaone.co.uk" className="text-primary hover:text-primary-light">
-                        hello@astaone.co.uk
+                      <a href="mailto:hello@astapropertymanagement.co.uk" className="text-primary hover:text-primary-light">
+                        hello@astapropertymanagement.co.uk
                       </a>{" "}
                       or call{" "}
                       <a href="tel:07452766766" className="text-primary hover:text-primary-light">
@@ -201,8 +201,8 @@ export default function LoginPortalHelpPage() {
                     <svg className="h-4 w-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    <a href="mailto:hello@astaone.co.uk" className="text-white hover:text-primary">
-                      hello@astaone.co.uk
+                    <a href="mailto:hello@astapropertymanagement.co.uk" className="text-white hover:text-primary">
+                      hello@astapropertymanagement.co.uk
                     </a>
                   </div>
                   <div className="flex items-center gap-2">
