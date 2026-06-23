@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import * as enquiryService from "../services/enquiryService.js";
 import { authMiddleware } from "../middleware/auth.js";
+import { sendMail } from "../lib/mailer.js";
 
 const router = Router();
 
@@ -19,6 +20,13 @@ router.post("/", async (req, res, next) => {
     const body = enquirySchema.parse(req.body);
     const enquiry = await enquiryService.createEnquiry(body);
     res.status(201).json({ id: enquiry.id, message: "Enquiry submitted successfully" });
+
+    // Fire-and-forget confirmation; signature is appended by the mailer.
+    sendMail({
+      to: body.email,
+      subject: "We've received your enquiry — ASTA Property Management",
+      text: `Hi ${body.name},\n\nThanks for getting in touch. We've received your enquiry${body.subject ? ` about "${body.subject}"` : ""} and a member of our team will respond within one working day.\n\nYour message:\n${body.message}`,
+    }).catch((err) => console.error("[mailer] enquiry confirmation failed:", err.message));
   } catch (e) {
     if (e.name === "ZodError") {
       const msg = e.errors?.[0]?.message || "Validation failed";

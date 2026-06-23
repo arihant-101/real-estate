@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import * as maintenanceRequestService from "../services/maintenanceRequestService.js";
 import { authMiddleware } from "../middleware/auth.js";
+import { sendMail } from "../lib/mailer.js";
 
 const router = Router();
 
@@ -20,6 +21,13 @@ router.post("/", async (req, res, next) => {
     const body = requestSchema.parse(req.body);
     const record = await maintenanceRequestService.createMaintenanceRequest(body);
     res.status(201).json({ id: record.id, message: "Maintenance request submitted successfully" });
+
+    // Fire-and-forget confirmation; signature is appended by the mailer.
+    sendMail({
+      to: body.tenantEmail,
+      subject: "Maintenance request received — ASTA Property Management",
+      text: `Hi ${body.tenantName},\n\nWe've received your maintenance request (${body.issueCategory}) for ${body.propertyAddressOrRef}. Our team will review it and be in touch shortly.\n\nDescription:\n${body.description}`,
+    }).catch((err) => console.error("[mailer] maintenance confirmation failed:", err.message));
   } catch (e) {
     if (e.name === "ZodError") {
       const msg = e.errors?.[0]?.message || "Validation failed";
