@@ -271,11 +271,11 @@ export default async function HomePage() {
 
       {/* 4. Achievements – pure black with gold typography */}
       <section className={`${homeSection} relative flex flex-col overflow-hidden bg-black`}>
-        <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 py-12 sm:px-6">
-          <p className="text-center text-xs font-medium uppercase tracking-[0.3em] text-primary/80">
-            By the numbers
+        <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center px-4 py-10 sm:px-6 sm:py-12">
+          <p className="text-center text-[10px] font-medium uppercase tracking-[0.35em] text-primary/70">
+            The numbers
           </p>
-          <div className="mt-12 grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 sm:gap-x-10 sm:gap-y-10 lg:grid-cols-4 lg:gap-8">
             {[
               { value: "£100M+", label: "Active value" },
               { value: "£200M+", label: "Lifetime sales" },
@@ -283,10 +283,10 @@ export default async function HomePage() {
               { value: "15+", label: "Years experience" },
             ].map(({ value, label }) => (
               <div key={label} className="group text-center">
-                <p className="text-4xl font-bold tracking-tight text-primary sm:text-5xl lg:text-6xl">
+                <p className="text-2xl font-semibold tracking-tight text-primary sm:text-3xl lg:text-[2rem]">
                   {value}
                 </p>
-                <p className="mt-2 text-xs font-medium uppercase tracking-[0.2em] text-primary/70 transition group-hover:text-primary">
+                <p className="mt-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-primary/55 transition group-hover:text-primary/80">
                   {label}
                 </p>
               </div>

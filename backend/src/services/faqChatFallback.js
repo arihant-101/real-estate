@@ -1,30 +1,84 @@
-import { FAQ_KNOWLEDGE } from "../data/faqKnowledge.js";
+import { FAQ_ENTRIES, FAQ_KNOWLEDGE } from "../data/faqKnowledge.js";
+
+const STOP_WORDS = new Set([
+  "a", "an", "the", "is", "are", "was", "were", "be", "been", "being",
+  "have", "has", "had", "do", "does", "did", "will", "would", "could", "should",
+  "may", "might", "must", "shall", "can", "need", "dare", "ought", "used",
+  "i", "you", "he", "she", "it", "we", "they", "what", "which", "who", "whom",
+  "this", "that", "these", "those", "am", "to", "of", "in", "for", "on", "with",
+  "at", "by", "from", "as", "into", "through", "during", "before", "after",
+  "above", "below", "between", "under", "again", "further", "then", "once",
+  "here", "there", "when", "where", "why", "how", "all", "each", "few", "more",
+  "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same",
+  "so", "than", "too", "very", "just", "and", "but", "if", "or", "because",
+  "about", "my", "your", "our", "their", "me", "us", "them", "please", "tell",
+  "know", "get", "like", "also", "any", "asta",
+]);
+
+function tokens(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 2 && !STOP_WORDS.has(w));
+}
+
+function scoreEntry(userMessage, entry) {
+  const lower = userMessage.toLowerCase();
+  const userTokens = tokens(userMessage);
+  if (userTokens.length === 0) return 0;
+
+  let score = 0;
+
+  for (const phrase of entry.keywords || []) {
+    if (lower.includes(phrase.toLowerCase())) score += 4;
+  }
+
+  const keywordBlob = (entry.keywords || []).join(" ").toLowerCase();
+  for (const word of userTokens) {
+    if (keywordBlob.includes(word)) score += 2;
+  }
+
+  const questionTokens = tokens(entry.q);
+  for (const word of userTokens) {
+    if (questionTokens.includes(word)) score += 1;
+  }
+
+  return score;
+}
+
+function findBestEntry(userMessage) {
+  let best = null;
+  let bestScore = 0;
+
+  for (const entry of FAQ_ENTRIES) {
+    const score = scoreEntry(userMessage, entry);
+    if (score > bestScore) {
+      bestScore = score;
+      best = entry;
+    }
+  }
+
+  // Require a minimum match so random text doesn't hit a weak FAQ
+  if (bestScore >= 3) return best;
+  return null;
+}
 
 const k = FAQ_KNOWLEDGE;
 
 /** Offline fallback when OpenRouter is unavailable — FAQ scope only. */
 export function fallbackFaqReply(userMessage) {
-  const q = userMessage.toLowerCase();
+  const q = userMessage.trim();
+  const lower = q.toLowerCase();
 
-  if (/service|offer|do you do|management|landlord|tenant|holiday|financial/.test(q)) {
-    return `ASTA Property Management offers:\n\n${k.services.map((s) => `• ${s}`).join("\n")}\n\nLearn more on our Services pages, or contact us at ${k.email}.`;
-  }
-
-  if (/contact|email|phone|call|reach|office|address|where are you/.test(q)) {
-    return `You can reach ASTA Property Management:\n\n• Email: ${k.email}\n• Phone: ${k.phone}\n• Hours: ${k.hours}\n• Office: ${k.address}\n\nUse our contact form: ${k.website}${k.contactPath}`;
-  }
-
-  if (/repair|maintenance|fix|broken|leak|issue report/.test(q)) {
-    return `${k.repairs}\n\nMaintenance request form: ${k.website}${k.maintenanceFormPath}\nRepairs (tenants): ${k.website}${k.repairsPath}\n\nFor emergencies, also call the number provided at move-in.`;
-  }
-
-  if (/hour|open|when|time|available/.test(q)) {
-    return `Our office hours are ${k.hours}.\n\nEmail: ${k.email}\nPhone: ${k.phone}\n\nWe usually respond to enquiries within one working day.`;
-  }
-
-  if (/something else|other|help|speak|human|agent/.test(q)) {
+  if (/something else|speak to someone|talk to someone|human agent/.test(lower)) {
     return `For anything beyond this FAQ assistant, please contact our team:\n\n${k.website}${k.contactPath}\nEmail: ${k.email}\nPhone: ${k.phone}`;
   }
 
-  return `I can help with ASTA services, contact details, and reporting repairs. For other questions, please use our contact form:\n\n${k.website}${k.contactPath}\nEmail: ${k.email}`;
+  const matched = findBestEntry(q);
+  if (matched) {
+    return `${matched.a}\n\nMore FAQs: ${k.website}${k.faqsPath}`;
+  }
+
+  return `I'm not sure about that specific question, but our team can help.\n\nBrowse all FAQs: ${k.website}${k.faqsPath}\nContact us: ${k.website}${k.contactPath}\nEmail: ${k.email}\nPhone: ${k.phone}`;
 }
