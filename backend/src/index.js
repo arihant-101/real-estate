@@ -16,6 +16,7 @@ import landlordRoutes from "./routes/landlord.js";
 import tenantRoutes from "./routes/tenant.js";
 import tenanciesRoutes from "./routes/tenancies.js";
 import adminRoutes from "./routes/admin.js";
+import faqChatRoutes from "./routes/faq-chat.js";
 
 const app = express();
 const PORT = env.PORT || 4000;
@@ -25,7 +26,10 @@ const explicitOrigins = process.env.FRONTEND_ORIGIN
   : [];
 const defaultOrigins = [
   "http://localhost:3000",
+  "http://localhost:3001",
   "https://realestate-frontend-h4u3.onrender.com",
+  "https://www.astapropertymanagement.co.uk",
+  "https://astapropertymanagement.co.uk",
 ];
 const allowedOrigins = explicitOrigins.length ? explicitOrigins : defaultOrigins;
 const isLocalhost = (origin) => /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
@@ -48,6 +52,11 @@ const authLimiter = rateLimit({
   max: 50,
   message: { error: "Too many attempts. Please try again later.", code: "RATE_LIMIT" },
 });
+const faqChatLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 40,
+  message: { error: "Too many messages. Please try again shortly.", code: "RATE_LIMIT" },
+});
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/properties", propertiesRoutes);
 app.use("/api/areas", areasRoutes);
@@ -60,6 +69,7 @@ app.use("/api/landlord", landlordRoutes);
 app.use("/api/tenant", tenantRoutes);
 app.use("/api/tenancies", tenanciesRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/faq-chat", faqChatLimiter, faqChatRoutes);
 
 app.use("/api/*", (_req, res) => {
   res.status(404).json({ error: "Not found", code: "NOT_FOUND" });
