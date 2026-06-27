@@ -1,5 +1,5 @@
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import { EnquiryForm } from "@/components/forms/EnquiryForm";
 import { PropertyCard } from "@/components/PropertyCard";
 import Footer from "@/components/Footer";
 import { HorizontalSearch } from "@/components/HorizontalSearch";
@@ -12,11 +12,17 @@ import {
 import { getAreas, getFeaturedProperties, getProperties } from "@/lib/server-api";
 import { STATIC_TESTIMONIALS } from "@/lib/testimonials";
 
-export const dynamic = "force-dynamic";
+/** Revalidate cached homepage data every 60s (ISR). */
+export const revalidate = 60;
 
-/** Default hero: Pexels #7578550, 2560×1440. Override with NEXT_PUBLIC_HERO_BG_VIDEO_URL; `false` = static image. */
+const EnquiryForm = dynamic(
+  () => import("@/components/forms/EnquiryForm").then((mod) => ({ default: mod.EnquiryForm })),
+  { ssr: true }
+);
+
+/** Default hero: Pexels #7578550, 1080p (same clip, smaller file than UHD). Override with NEXT_PUBLIC_HERO_BG_VIDEO_URL; `false` = static image. */
 const PEXELS_HERO_BG_MP4 =
-  "https://videos.pexels.com/video-files/7578550/7578550-uhd_2560_1440_30fps.mp4";
+  "https://videos.pexels.com/video-files/7578550/7578550-hd_1920_1080_30fps.mp4";
 
 const HERO_BG_VIDEO_URL = (() => {
   const env = process.env.NEXT_PUBLIC_HERO_BG_VIDEO_URL?.trim();
@@ -46,7 +52,7 @@ export default async function HomePage() {
     const [areasResult, featuredResult, allResult] = await Promise.allSettled([
       getAreas().catch(() => []),
       getFeaturedProperties().catch(() => ({ items: [] })),
-      getProperties({ limit: "72" }).catch(() => ({ items: [] })),
+      getProperties({ limit: "24" }).catch(() => ({ items: [] })),
     ]);
 
     if (areasResult.status === 'fulfilled') {
@@ -82,7 +88,8 @@ export default async function HomePage() {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
+            poster={HERO_POSTER_IMAGE}
             aria-hidden
           >
             <source src={HERO_BG_VIDEO_URL} type="video/mp4" />

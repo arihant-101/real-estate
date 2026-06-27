@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, Montserrat, Space_Grotesk } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
@@ -12,20 +12,6 @@ const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
-});
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-logo",
-  display: "swap",
-});
-
-/** Geometric grotesk for outlined home marquee (closer to Centrick-style display type than Montserrat). */
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-marquee",
-  display: "swap",
-  weight: ["600", "700"],
 });
 
 /** Local dev default so metadataBase matches the origin (favicon / OG URLs resolve to this host). */
@@ -55,10 +41,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${dmSans.variable} ${montserrat.variable} ${spaceGrotesk.variable}`}
-    >
+    <html lang="en" className={dmSans.variable}>
+      <head>
+        <link rel="preconnect" href="https://videos.pexels.com" crossOrigin="anonymous" />
+        <link rel="preload" as="image" href="/images/home-hero-poster.jpg" />
+      </head>
       <body className="flex min-h-screen flex-col font-sans">
         <AuthProvider>
           <Header />

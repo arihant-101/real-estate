@@ -89,9 +89,9 @@ export default function ConsentAwareScripts() {
           <GaRouteReporter gaId={gaId} active />
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-            strategy="afterInteractive"
+            strategy="lazyOnload"
           />
-          <Script id="asta-gtag-init" strategy="afterInteractive">
+          <Script id="asta-gtag-init" strategy="lazyOnload">
             {`
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
@@ -105,7 +105,7 @@ gtag('config', '${gaId}', { send_page_view: true });
       {metaPixelId && perms.marketing ? (
         <>
           <MetaRouteReporter active />
-          <Script id="asta-meta-pixel" strategy="afterInteractive">
+          <Script id="asta-meta-pixel" strategy="lazyOnload">
           {`
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;

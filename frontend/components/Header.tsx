@@ -140,7 +140,6 @@ export default function Header({ variant = "sticky" }: HeaderProps) {
             className="h-12 w-auto object-contain object-left bg-transparent"
             style={{ background: "transparent" }}
             priority
-            unoptimized
           />
           <div className="hidden flex-col sm:flex sm:flex-col gap-0.5">
             <Image
@@ -149,7 +148,6 @@ export default function Header({ variant = "sticky" }: HeaderProps) {
               width={80}
               height={24}
               className="h-7 w-auto object-contain object-left bg-transparent"
-              unoptimized
             />
             <Image
               src="/asta-word.png"
@@ -157,7 +155,6 @@ export default function Header({ variant = "sticky" }: HeaderProps) {
               width={120}
               height={16}
               className="h-4 w-auto object-contain object-left bg-transparent"
-              unoptimized
             />
           </div>
         </Link>

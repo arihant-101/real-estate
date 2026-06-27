@@ -2,3 +2,5 @@ node_modules
 .next
 *.log
 .DS_Store
+.real-estate-vps-deploy.env
+*.secrets.env

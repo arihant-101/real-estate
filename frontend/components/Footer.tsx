@@ -123,7 +123,6 @@ export default function Footer() {
                 height={42}
                 className="h-12 w-auto object-contain object-left"
                 style={{ background: "transparent" }}
-                unoptimized
               />
             </Link>
 

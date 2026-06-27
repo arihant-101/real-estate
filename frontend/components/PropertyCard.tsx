@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 type PropertyCardProps = {
@@ -17,6 +18,21 @@ type PropertyCardProps = {
   areaSqFt?: number;
 };
 
+const OPTIMIZABLE_IMAGE_HOSTS = new Set([
+  "images.unsplash.com",
+  "www.astapropertymanagement.co.uk",
+  "astapropertymanagement.co.uk",
+  "localhost",
+]);
+
+function canOptimizeImageUrl(url: string): boolean {
+  try {
+    return OPTIMIZABLE_IMAGE_HOSTS.has(new URL(url).hostname);
+  } catch {
+    return false;
+  }
+}
+
 export function PropertyCard({
   href,
   id,
@@ -35,6 +51,9 @@ export function PropertyCard({
   const typeLabel = listingType === "HOLIDAY_LET" ? "Holiday Let" : "Rental";
   const hrefSlug = slug ?? id;
   const to = href ?? `/properties/${hrefSlug}`;
+  const imageClassName =
+    "h-full w-full object-cover transition duration-500 group-hover:scale-[1.03] brightness-[1.05] contrast-[1.04] saturate-[1.03]";
+
   return (
     <Link
       href={to}
@@ -43,11 +62,24 @@ export function PropertyCard({
       <div className="relative aspect-[4/3] overflow-hidden bg-panel">
         {imageUrl ? (
           <>
-            <img
-              src={imageUrl}
-              alt=""
-              className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03] brightness-[1.05] contrast-[1.04] saturate-[1.03]"
-            />
+            {canOptimizeImageUrl(imageUrl) ? (
+              <Image
+                src={imageUrl}
+                alt=""
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className={imageClassName}
+                loading="lazy"
+              />
+            ) : (
+              <img
+                src={imageUrl}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className={imageClassName}
+              />
+            )}
             {/* Light vignette for text legibility without dulling the photo */}
             <div
               className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/48 via-black/12 to-transparent"
