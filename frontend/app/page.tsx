@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { PropertyCard } from "@/components/PropertyCard";
 import Footer from "@/components/Footer";
-import { HomeHeroBackground } from "@/components/HomeHeroBackground";
 import { HorizontalSearch } from "@/components/HorizontalSearch";
 import {
   buildListingPool,
@@ -82,11 +81,18 @@ export default async function HomePage() {
       {/* 1. Hero — video (default) or static house image */}
       <section className={`relative page-banner ${homeSection} flex flex-col overflow-hidden bg-surface`}>
         {HERO_BG_VIDEO_URL ? (
-          <HomeHeroBackground
-            videoUrl={HERO_BG_VIDEO_URL}
-            posterWebp={HERO_POSTER_WEBP}
-            posterJpg={HERO_POSTER_JPG}
-          />
+          <video
+            className="absolute inset-0 z-0 h-full min-h-full w-full min-w-full object-cover object-center opacity-[0.82] brightness-[1.12] contrast-[1.06] saturate-[1.05]"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster={HERO_POSTER_JPG}
+            aria-hidden
+          >
+            <source src={HERO_BG_VIDEO_URL} type="video/mp4" />
+          </video>
         ) : (
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.82] brightness-[1.08] contrast-[1.05]"
@@ -94,8 +100,8 @@ export default async function HomePage() {
             aria-hidden
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/22 via-black/52 to-black/78" />
-        <div className="relative flex min-h-0 flex-1 flex-col">
+        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/22 via-black/52 to-black/78" />
+        <div className="relative z-10 flex min-h-0 flex-1 flex-col">
           <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 py-14 sm:px-6 lg:py-20">
             <div className="text-center">
               <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
