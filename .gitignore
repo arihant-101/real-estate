@@ -2,5 +2,11 @@ node_modules
 .next
 *.log
 .DS_Store
+<<<<<<< HEAD
 .real-estate-vps-deploy.env
 *.secrets.env
+=======
+.env
+.env.local
+.env.*.local
+>>>>>>> 063e8297c7ae4f4a15f65a67aa66e989faf8f94b
