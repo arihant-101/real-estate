@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { PropertyCard } from "@/components/PropertyCard";
 import Footer from "@/components/Footer";
+import { HomeHeroBackground } from "@/components/HomeHeroBackground";
 import { HorizontalSearch } from "@/components/HorizontalSearch";
 import {
   buildListingPool,
@@ -20,19 +21,18 @@ const EnquiryForm = dynamic(
   { ssr: true }
 );
 
-/** Default hero: Pexels #7578550, 1080p (same clip, smaller file than UHD). Override with NEXT_PUBLIC_HERO_BG_VIDEO_URL; `false` = static image. */
-const PEXELS_HERO_BG_MP4 =
-  "https://videos.pexels.com/video-files/7578550/7578550-hd_1920_1080_30fps.mp4";
+/** Self-hosted hero video (Pexels #7578550, re-encoded). Override with NEXT_PUBLIC_HERO_BG_VIDEO_URL; `false` = static image. */
+const DEFAULT_HERO_BG_MP4 = "/videos/home-hero.mp4";
 
 const HERO_BG_VIDEO_URL = (() => {
   const env = process.env.NEXT_PUBLIC_HERO_BG_VIDEO_URL?.trim();
   if (env === "false" || env === "0") return "";
-  return env || PEXELS_HERO_BG_MP4;
+  return env || DEFAULT_HERO_BG_MP4;
 })();
 
-/** Hero video poster (buffering) — same mood as "By the numbers" still */
-const HERO_POSTER_IMAGE =
-  "/images/home-hero-poster.jpg";
+/** Hero poster — WebP for LCP; JPG fallback for video poster attr */
+const HERO_POSTER_WEBP = "/images/home-hero-poster.webp";
+const HERO_POSTER_JPG = "/images/home-hero-poster.jpg";
 
 /** Original hero still when video is disabled (`NEXT_PUBLIC_HERO_BG_VIDEO_URL=false`) */
 const HERO_STATIC_FALLBACK_IMAGE =
@@ -82,18 +82,11 @@ export default async function HomePage() {
       {/* 1. Hero — video (default) or static house image */}
       <section className={`relative page-banner ${homeSection} flex flex-col overflow-hidden bg-surface`}>
         {HERO_BG_VIDEO_URL ? (
-          <video
-            className="absolute inset-0 h-full min-h-full w-full min-w-full object-cover object-center opacity-[0.82] brightness-[1.12] contrast-[1.06] saturate-[1.05]"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster={HERO_POSTER_IMAGE}
-            aria-hidden
-          >
-            <source src={HERO_BG_VIDEO_URL} type="video/mp4" />
-          </video>
+          <HomeHeroBackground
+            videoUrl={HERO_BG_VIDEO_URL}
+            posterWebp={HERO_POSTER_WEBP}
+            posterJpg={HERO_POSTER_JPG}
+          />
         ) : (
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.82] brightness-[1.08] contrast-[1.05]"

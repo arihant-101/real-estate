@@ -44,8 +44,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={dmSans.variable}>
       <head>
-        <link rel="preconnect" href="https://videos.pexels.com" crossOrigin="anonymous" />
-        <link rel="preload" as="image" href="/images/home-hero-poster.jpg" />
+        <link
+          rel="preload"
+          as="image"
+          href="/images/home-hero-poster.webp"
+          type="image/webp"
+        />
       </head>
       <body className="flex min-h-screen flex-col font-sans">
         <AuthProvider>
