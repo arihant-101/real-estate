@@ -50,12 +50,12 @@ export function HomeHeroBackground({
         priority
         fetchPriority="high"
         sizes="100vw"
-        className={`${FILTER_CLASS} ${VISIBLE_OPACITY}`}
+        className={`${FILTER_CLASS} z-0 transition-opacity duration-300 ${videoReady ? "opacity-0" : VISIBLE_OPACITY}`}
         aria-hidden
       />
       <video
         ref={videoRef}
-        className={`${FILTER_CLASS} transition-opacity duration-300 ${videoReady ? VISIBLE_OPACITY : "opacity-0"}`}
+        className={`${FILTER_CLASS} z-[1] transition-opacity duration-300 ${videoReady ? VISIBLE_OPACITY : "opacity-0"}`}
         autoPlay
         muted
         loop
