@@ -201,12 +201,9 @@ export default function Footer() {
             href="https://caebusinesssolutions.co.uk/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/55 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            className="text-white/45 no-underline transition-colors duration-200 hover:text-white hover:underline active:text-white active:underline focus-visible:text-white focus-visible:underline focus-visible:outline-none"
           >
-            <span className="transition-colors duration-200 hover:text-primary active:text-[#E8C4B0]">
-              CAE
-            </span>{" "}
-            Business Solutions LTD
+            CAE Business Solutions LTD
           </a>
         </p>
       </div>
