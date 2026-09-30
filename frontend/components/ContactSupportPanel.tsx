@@ -19,17 +19,17 @@ export default function ContactSupportPanel({ className = "" }: ContactSupportPa
       <div className="mt-6 grid gap-3 sm:grid-cols-3">
         <a
           href="mailto:hello@astapropertymanagement.co.uk"
-          className="rounded-xl border border-white/15 bg-black/20 px-4 py-3 text-sm text-white/90 transition hover:border-primary/40 hover:text-primary"
+          className="flex min-w-0 items-center break-all rounded-xl border border-white/15 bg-black/20 px-4 py-3 text-sm text-white/90 transition hover:border-primary/40 hover:text-primary"
         >
           hello@astapropertymanagement.co.uk
         </a>
         <a
           href="tel:07452766766"
-          className="rounded-xl border border-white/15 bg-black/20 px-4 py-3 text-sm text-white/90 transition hover:border-primary/40 hover:text-primary"
+          className="flex min-w-0 items-center rounded-xl border border-white/15 bg-black/20 px-4 py-3 text-sm text-white/90 transition hover:border-primary/40 hover:text-primary"
         >
           07452 766766
         </a>
-        <p className="rounded-xl border border-white/15 bg-black/20 px-4 py-3 text-sm text-white/75">
+        <p className="flex min-w-0 items-center rounded-xl border border-white/15 bg-black/20 px-4 py-3 text-sm text-white/75">
           Mon-Fri, 9:00 AM-5:30 PM
         </p>
       </div>
