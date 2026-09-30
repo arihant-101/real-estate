@@ -16,7 +16,7 @@ export default function ContactSupportPanel({ className = "" }: ContactSupportPa
         Reach out to our team for document guidance, maintenance help, portal access, or tenancy questions.
       </p>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_max-content_max-content]">
         <a
           href="mailto:hello@astapropertymanagement.co.uk"
           className="flex min-w-0 items-center break-all rounded-xl border border-white/15 bg-black/20 px-4 py-3 text-sm text-white/90 transition hover:border-primary/40 hover:text-primary"
@@ -25,7 +25,7 @@ export default function ContactSupportPanel({ className = "" }: ContactSupportPa
         </a>
         <a
           href="tel:07452766766"
-          className="flex min-w-0 items-center rounded-xl border border-white/15 bg-black/20 px-4 py-3 text-sm text-white/90 transition hover:border-primary/40 hover:text-primary"
+          className="flex w-max items-center whitespace-nowrap rounded-xl border border-white/15 bg-black/20 px-3 py-3 text-sm text-white/90 transition hover:border-primary/40 hover:text-primary"
         >
           07452 766766
         </a>
